@@ -1,0 +1,73 @@
+name: sanluquitas
+
+services:
+  # Aplicación Laravel (PHP-FPM). Solo está en la red interna.
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: app
+    image: sanluquitas/portal-app:latest
+    container_name: sl-portal-app
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - portal_storage:/var/www/html/storage/app
+    networks:
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+  # Nginx: recibe las peticiones en el puerto 8080 y las pasa a la app.
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: web
+    image: sanluquitas/portal-web:latest
+    container_name: sl-portal-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+    networks:
+      - frontend
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+  # Base de datos del portal. No publica puertos: solo la app la ve.
+  db:
+    image: mariadb:11.4
+    container_name: sl-portal-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - portal_db:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  frontend: {}
+  backend:
+    internal: true
+
+volumes:
+  portal_db: {}
+  portal_storage: {}

@@ -1,0 +1,16 @@
+.git
+.github
+.env
+docs
+moodle
+scripts
+backups
+**/node_modules
+portal-laravel/vendor
+portal-laravel/.env
+portal-laravel/public/build
+portal-laravel/public/hot
+portal-laravel/storage/logs/*
+portal-laravel/storage/framework/cache/*
+portal-laravel/storage/framework/sessions/*
+portal-laravel/storage/framework/views/*

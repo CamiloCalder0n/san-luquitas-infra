@@ -1,0 +1,10 @@
+# Tareas programadas del servidor San Luquitas
+# Instalar con: sudo cp scripts/cron-sanluquitas /etc/cron.d/sanluquitas
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Cron de Moodle (cada minuto)
+* * * * * www-data /usr/bin/php /var/www/moodle/admin/cli/cron.php >/dev/null 2>&1
+
+# Backup completo todos los días a las 2:00 a.m.
+0 2 * * * root /opt/san-luquitas-infra/scripts/backup.sh >> /var/log/sanluquitas-backup.log 2>&1

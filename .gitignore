@@ -1,0 +1,15 @@
+# Secretos
+.env
+
+# Backups y exportaciones
+backups/
+*.sql
+*.dump
+*.tar.gz
+*.ova
+
+# Sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
