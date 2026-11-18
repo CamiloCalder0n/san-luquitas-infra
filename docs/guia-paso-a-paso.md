@@ -252,19 +252,71 @@ sudo systemctl enable --now postgresql
 psql --version
 ```
 
-Crear la base y el usuario de Moodle:
+Mismos pasos del manual de bases de datos visto en clase (servicio, usuario postgres, psql, usuarios y permisos), adaptados a Ubuntu y **sin apagar el firewall**.
+
+Estado del servicio:
 
 ```bash
-sudo -u postgres psql -c "CREATE USER moodleuser WITH PASSWORD 'CLAVE_BD_MOODLE';"
-sudo -u postgres psql -c "CREATE DATABASE moodle WITH OWNER moodleuser ENCODING 'UTF8' TEMPLATE template0;"
-sudo -u postgres psql -c "\l moodle"
+sudo systemctl status postgresql --no-pager
 ```
 
-Comprobar que solo escucha en localhost:
+Contraseña del usuario `postgres` del sistema y del motor:
 
 ```bash
+sudo passwd postgres
+su postgres
+psql
+```
+
+Dentro de `psql`:
+
+```sql
+ALTER USER postgres WITH PASSWORD 'CLAVE_POSTGRES';
+CREATE USER moodleuser WITH PASSWORD 'CLAVE_BD_MOODLE';
+CREATE DATABASE moodle WITH OWNER moodleuser ENCODING 'UTF8' TEMPLATE template0;
+GRANT ALL PRIVILEGES ON DATABASE moodle TO moodleuser;
+\l
+\du
+\q
+```
+
+Salir con `exit`.
+
+Configuración (en Ubuntu los archivos están en `/etc/postgresql/17/main/`):
+
+```bash
+sudo nano /etc/postgresql/17/main/postgresql.conf
+```
+
+Dejar:
+
+```
+listen_addresses = 'localhost'
+port = 5432
+```
+
+A diferencia del manual (`'*'`), aquí se deja en `localhost` porque Moodle está en el mismo servidor y nadie de afuera necesita entrar a la base de datos.
+
+```bash
+sudo nano /etc/postgresql/17/main/pg_hba.conf
+```
+
+En la sección IPv4, antes de las demás líneas `host`, agregar:
+
+```
+# TIPO  BASE    USUARIO     DIRECCION       METODO
+host    moodle  moodleuser  127.0.0.1/32    scram-sha-256
+```
+
+Solo el usuario de Moodle, solo a su base de datos, solo desde el mismo servidor y con contraseña cifrada.
+
+```bash
+sudo systemctl restart postgresql
+psql -h 127.0.0.1 -d moodle -U moodleuser -c "SELECT current_user, current_database();"
 sudo ss -tlnp | grep 5432
 ```
+
+El último comando debe mostrar `127.0.0.1:5432` (no `0.0.0.0`).
 
 ### 4.2 Apache + PHP 8.3
 
@@ -367,6 +419,15 @@ sudo chown -R root:root /var/www/moodle
 sudo chown root:www-data /var/www/moodle/config.php
 sudo chmod 640 /var/www/moodle/config.php
 ```
+
+Avisar a Moodle que el router ya está configurado en Apache (la línea `FallbackResource`):
+
+```bash
+sudo sed -i 's|^require_once|$CFG->routerconfigured = true;\nrequire_once|' /var/www/moodle/config.php
+sudo grep -n "routerconfigured\|require_once" /var/www/moodle/config.php
+```
+
+Debe salir `$CFG->routerconfigured = true;` justo antes de `require_once`.
 
 ### 4.6 Cron de Moodle
 

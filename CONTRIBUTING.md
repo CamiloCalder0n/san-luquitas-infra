@@ -92,7 +92,7 @@ docker compose down -v
 - La base de datos es MariaDB y el host es `db` (nombre del servicio en Docker).
 - Las variables de la app se leen del `.env` de la raíz del repo, no del de `portal-laravel/`.
 - Las migraciones se ejecutan solas cuando arranca el contenedor.
-- El enlace a Moodle debe salir de `env('MOODLE_URL')`, no quemado en el código.
+- El enlace a Moodle se configura en `config/app.php` con `'moodle_url' => env('MOODLE_URL')` y en las vistas se usa `config('app.moodle_url')`. No usar `env()` directo en las vistas: con `config:cache` devuelve vacío.
 
 ## Servidor (Cami)
 

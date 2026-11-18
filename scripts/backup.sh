@@ -36,6 +36,8 @@ log "Inicio del backup en $DEST"
 # Moodle: modo mantenimiento para que nadie escriba mientras se copia
 log "Moodle: activando modo mantenimiento"
 sudo -u www-data php "$MOODLE_CLI/maintenance.php" --enable >/dev/null
+# Si algo falla, igual se quita el modo mantenimiento
+trap 'sudo -u www-data php "$MOODLE_CLI/maintenance.php" --disable >/dev/null' EXIT
 
 log "Moodle: base de datos ($MOODLE_DB)"
 sudo -u postgres pg_dump -Fc "$MOODLE_DB" > "$DEST/moodle_db.dump"
@@ -53,6 +55,7 @@ log "Moodle: config.php"
 cp "$MOODLE_DIR/config.php" "$DEST/moodle_config.php"
 
 sudo -u www-data php "$MOODLE_CLI/maintenance.php" --disable >/dev/null
+trap - EXIT
 log "Moodle: modo mantenimiento desactivado"
 
 # Portal Laravel
