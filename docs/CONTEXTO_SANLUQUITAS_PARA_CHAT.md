@@ -34,7 +34,7 @@ Modalidad: **Tradicional + Docker**.
 
 ## Repo
 
-`github.com/CamiloCalder0n/san-luquitas-infra` (privado, Santiago colaborador).
+`github.com/CamiloCalder0n/san-luquitas-infra` (público, Santiago colaborador). Nada de secretos en el repo.
 
 ```
 portal-laravel/   código Laravel (Santiago)
