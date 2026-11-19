@@ -30,7 +30,17 @@ Pruebas automáticas: `php artisan test`.
 
 ## Docker (lo que va al servidor)
 
-Se levanta desde la raíz del repo con `docker compose up -d --build` y abre en el puerto 8080. Las variables salen del `.env` de la raíz, no del de esta carpeta. Para cargar las novedades de ejemplo: `docker compose exec app php artisan db:seed --force`.
+Se levanta desde la **raíz del repo** (no desde esta carpeta). Las variables salen del `.env` de la raíz:
+
+```bash
+cp .env.example .env
+echo "base64:$(openssl rand -base64 32)"   # pegar el resultado en APP_KEY
+# en .env: poner claves de prueba en DB_PASSWORD y DB_ROOT_PASSWORD
+docker compose up -d --build
+docker compose exec app php artisan db:seed --force   # novedades de ejemplo
+```
+
+El portal abre en http://localhost:8080. Más detalle en `docs/guias/GUIA_01_SANTIAGO_PORTAL.md` (Paso 7).
 
 ## Limitaciones
 
