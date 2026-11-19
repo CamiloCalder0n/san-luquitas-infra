@@ -44,7 +44,7 @@
 
         <div>
             <label for="fecha_publicacion" class="block text-sm font-medium mb-1">Fecha de publicación</label>
-            <input type="date" id="fecha_publicacion" name="fecha_publicacion" required
+            <input type="date" id="fecha_publicacion" name="fecha_publicacion" min="2000-01-01" max="2100-12-31" required
                    value="{{ old('fecha_publicacion', $novedad->fecha_publicacion?->format('Y-m-d')) }}"
                    class="w-full rounded-md border border-stone-300 px-3 py-2 @error('fecha_publicacion') border-red-500 @enderror">
             @error('fecha_publicacion') <p class="mt-1 text-sm text-red-700">{{ $message }}</p> @enderror
