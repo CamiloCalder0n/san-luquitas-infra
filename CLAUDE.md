@@ -7,7 +7,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 
 - Hablar en español colombiano, directo, un paso a la vez.
 - Seguir la guía que el usuario indique (`docs/guias/...`) en orden. No saltarse pasos ni inventar requisitos.
-- No poner a Claude como coautor ni mencionar IA en commits o PR.
+- No poner a Claude como coautor ni firmas de IA en commits ni comentarios. La sección "Uso de IA" de la plantilla del PR sí se llena (cuenta para la nota).
 - Commits en español con prefijo: `feat:`, `fix:`, `infra:`, `docs:`.
 - Nunca escribir secretos reales en archivos del repo (`.env` no se sube).
 - Si algo no cuadra con el enunciado de la hackathon o con la guía, preguntar antes de improvisar.
@@ -15,7 +15,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 ## Flujo de entrega (commits y PRs)
 
 1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos.
-2. Claude hace commit, push y abre el PR (reviewer: Cami).
+2. Claude hace commit, push y abre el PR (reviewer: el otro integrante). Commit y push solo dentro de este flujo y en la rama del PR.
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
 4. **El merge lo hace Cami.** Claude nunca hace merge, tag ni `push --force`, y nunca sube directo a `main`.
 

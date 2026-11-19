@@ -12,7 +12,7 @@ En la terminal de VS Code, dentro del repo, abrir `claude` y pegar:
 ```
 Lee CLAUDE.md, docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md y docs/guias/GUIA_01_SANTIAGO_PORTAL.md.
 Sigue la guía desde el Paso 1, un paso a la vez, y espera mi confirmación entre pasos.
-Trabaja solo en portal-laravel/. No hagas commits.
+Trabaja solo en portal-laravel/. Para commits y PRs sigue el "Flujo de entrega" de CLAUDE.md.
 ```
 
 ---
@@ -172,15 +172,7 @@ Para limpiar todo (borra la BD local): `docker compose down -v`.
 
 1. Capturas a `docs/capturas/` con nombres `portal-01-inicio.png`, `portal-02-novedades.png`, `portal-03-crear.png`, `portal-04-docker-ps.png`, `portal-05-persistencia.png`.
 2. En `docs/registro-ia.md` anotar el prompt principal de Claude Code, qué generó y qué tuviste que corregir.
-3. Commit y PR:
-
-```bash
-git add portal-laravel docs/capturas docs/registro-ia.md
-git commit -m "feat: portal institucional con novedades"
-git push -u origin feat/portal-base
-```
-
-En GitHub: **Compare & pull request** → llenar la plantilla → reviewer: Cami.
+3. Commit y PR: los hace Claude Code siguiendo el "Flujo de entrega" de `CLAUDE.md` (revisión doble, PR con la plantilla llena, reviewer: Cami, y luego la skill `revision-pr` hasta luz verde). El portal puede ir en varios PRs pequeños.
 
 Verificar antes del commit que **no** se suben `.env`, `vendor/` ni `node_modules/` (`git status`).
 
