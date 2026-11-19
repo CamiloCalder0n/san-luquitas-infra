@@ -16,7 +16,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 
 1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos (máximo 3 vueltas; si sigue fallando, parar y avisar al usuario).
 2. Trabajo en automático: al terminar cada bloque del plan (un PR = un bloque, no un PR por cada paso pequeño) Claude hace la revisión doble, commit, push y abre el PR (reviewer: el otro integrante) sin pedir confirmación, y avisa al usuario. Commit y push solo dentro de este flujo y en la rama del PR, siempre con el "Push seguro" de la skill. Nada se trabaja en `main`.
-   - Los PRs que dependen de otro salen de la rama anterior (PRs encadenados) y su base es esa rama.
+   - Los PRs que dependen de otro salen de la rama anterior (PRs encadenados) y su base es esa rama. La primera línea del cuerpo dice: "Depende de #N. Fusionar #N primero; antes de fusionar este, cambiar su base a `main`." Al empezar cada bloque se revisa si alguna base ya se fusionó (ver skill, "Base del PR ya fusionada").
    - Mientras el PR del flujo (`docs/flujo-revision`) no esté en `main`, toda rama nueva sale de esa rama (o de una que salga de ella), para tener `.claude/` (skill y `settings.json`). Nunca crear ramas de trabajo desde un `main` que no tenga `.claude/settings.json`.
    - En los commits se agregan los archivos por nombre (nunca `git add -A` ni `git add .`).
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
