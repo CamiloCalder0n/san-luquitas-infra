@@ -14,13 +14,13 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 
 ## Flujo de entrega (commits y PRs)
 
-1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos.
-2. Trabajo en automático: al terminar cada bloque del plan (un PR = un bloque, no un PR por cada paso pequeño) Claude hace la revisión doble, commit, push y abre el PR (reviewer: el otro integrante) sin pedir confirmación, y avisa al usuario. Commit y push solo dentro de este flujo y en la rama del PR. Nada se trabaja en `main`.
+1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos (máximo 3 vueltas; si sigue fallando, parar y avisar al usuario).
+2. Trabajo en automático: al terminar cada bloque del plan (un PR = un bloque, no un PR por cada paso pequeño) Claude hace la revisión doble, commit, push y abre el PR (reviewer: el otro integrante) sin pedir confirmación, y avisa al usuario. Commit y push solo dentro de este flujo y en la rama del PR, siempre con el "Push seguro" de la skill. Nada se trabaja en `main`.
    - Los PRs que dependen de otro salen de la rama anterior (PRs encadenados) y su base es esa rama.
    - En los commits se agregan los archivos por nombre (nunca `git add -A` ni `git add .`).
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
-4. **El merge lo hace Cami.** Claude nunca hace merge, tag ni `push --force`, y nunca sube directo a `main`.
-5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs. Cada falla se corrige en el PR que la introdujo (Paso 6 de la skill) y se actualizan sus PRs hijos. Termina cuando una pasada completa no encuentra nada medio o más.
+4. **El merge lo hace Cami.** Claude nunca hace merge, tag, rebase ni `push --force`, y nunca sube directo a `main`. `.claude/settings.json` bloquea esos comandos; no quitar esos bloqueos.
+5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs. Cada falla se corrige en el PR que la introdujo si sigue abierto (Paso 6 de la skill, y se actualizan sus PRs hijos); si ya se fusionó, en un PR nuevo `fix/...` desde `origin/main`. Termina cuando una pasada completa no encuentra nada medio o más (máximo 3 pasadas; si sigue saliendo algo, parar y avisar al usuario).
 
 ## Límites por persona
 
