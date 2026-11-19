@@ -20,15 +20,23 @@ Trabaja solo en portal-laravel/. Para commits y PRs sigue el "Flujo de entrega" 
 ## Paso 0 – Repo y rama
 
 1. Aceptar la invitación del repo en GitHub (llega al correo).
-2. Clonar y crear la rama:
+2. Clonar:
 
 ```bash
 git clone https://github.com/CamiloCalder0n/san-luquitas-infra.git
 cd san-luquitas-infra
-git checkout -b feat/portal-base
 ```
 
-Si el PR del flujo de revisión (`docs/flujo-revision`) todavía no está en `main`, la rama sale de esa: `git switch docs/flujo-revision && git switch -c feat/portal-base`, y el PR del portal va con base `docs/flujo-revision`. Así la rama ya trae `.claude/` (skill y bloqueo de firma de IA).
+3. Crear la rama (solo una de las dos opciones):
+
+- Si el PR del flujo de revisión (`docs/flujo-revision`) **ya está en `main`**:
+  ```bash
+  git switch -c feat/portal-base origin/main
+  ```
+- Si **todavía no está en `main`** (la rama tiene que traer `.claude/`: skill y bloqueo de firma de IA). El PR del portal va con base `docs/flujo-revision`:
+  ```bash
+  git switch -c feat/portal-base origin/docs/flujo-revision
+  ```
 
 ## Paso 1 – Crear el proyecto Laravel
 
