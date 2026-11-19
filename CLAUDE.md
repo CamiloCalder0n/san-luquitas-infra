@@ -7,7 +7,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 
 - Hablar en español colombiano, directo, un paso a la vez.
 - Seguir la guía que el usuario indique (`docs/guias/...`) en orden. No saltarse pasos ni inventar requisitos.
-- No poner a Claude como coautor ni firmas de IA en commits ni comentarios. La sección "Uso de IA" de la plantilla del PR sí se llena (cuenta para la nota).
+- **Nunca** firma de IA: ni `Co-Authored-By`, ni "Generated with Claude Code", ni nada parecido en commits, título o cuerpo del PR, ni comentarios. `.claude/settings.json` lo apaga (`attribution` vacío); no quitarlo. La sección "Uso de IA" de la plantilla del PR sí se llena (cuenta para la nota).
 - Commits en español con prefijo: `feat:`, `fix:`, `infra:`, `docs:`.
 - Nunca escribir secretos reales en archivos del repo (`.env` no se sube).
 - Si algo no cuadra con el enunciado de la hackathon o con la guía, preguntar antes de improvisar.
@@ -20,7 +20,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
    - En los commits se agregan los archivos por nombre (nunca `git add -A` ni `git add .`).
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
 4. **El merge lo hace Cami.** Claude nunca hace merge, tag ni `push --force`, y nunca sube directo a `main`.
-5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs.
+5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs. Cada falla se corrige en el PR que la introdujo (Paso 6 de la skill) y se actualizan sus PRs hijos. Termina cuando una pasada completa no encuentra nada medio o más.
 
 ## Límites por persona
 
