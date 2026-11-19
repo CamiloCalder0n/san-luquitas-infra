@@ -84,6 +84,19 @@ class NovedadTest extends TestCase
         $this->assertSame(0, Novedad::count());
     }
 
+    public function test_rechaza_fechas_con_ano_raro_o_fuera_de_rango(): void
+    {
+        foreach (['20266-11-01', '1999-12-31', '2101-01-01', '01/11/2026'] as $fecha) {
+            $this->post(route('novedades.store'), $this->datosValidos(['fecha_publicacion' => $fecha]))
+                ->assertSessionHasErrors('fecha_publicacion');
+        }
+
+        $this->post(route('novedades.store'), $this->datosValidos(['fecha_publicacion' => '20266-11-01']))
+            ->assertSessionHasErrors(['fecha_publicacion' => 'El campo fecha de publicación debe ser una fecha válida (año de 4 dígitos).']);
+
+        $this->assertSame(0, Novedad::count());
+    }
+
     public function test_muestra_edita_y_elimina_una_novedad(): void
     {
         $novedad = Novedad::factory()->create();
