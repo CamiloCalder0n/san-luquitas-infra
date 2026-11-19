@@ -142,7 +142,7 @@ git worktree remove --force "$wt" 2>/dev/null; git worktree add --detach "$wt" o
 cd "$wt"
 git cat-file -e HEAD:portal-laravel/composer.json 2>/dev/null && echo "hay portal" || echo "no hay portal"
 ```
-Todo lo de abajo se corre dentro de `$wt`. Al terminar la ronda: `docker compose down` (sin `-v`) y `git worktree remove --force "$wt"`.
+Todo lo de abajo se corre dentro de `$wt`. Al terminar la ronda: si se levantó Docker, `docker compose down` (sin `-v`) y avisar al usuario que su entorno local quedó apagado; después `git worktree remove --force "$wt"`.
 
 Si el PR toca `portal-laravel/` (y "hay portal"), primero preparar (no cuenta como verificación):
 ```bash
@@ -159,9 +159,19 @@ DB_CONNECTION=sqlite DB_DATABASE=:memory: php artisan migrate:fresh --seed --for
 php artisan test
 npm run build
 ```
-Si el PR toca `portal-laravel/`, `docker/` o `compose.yaml`, desde la raíz del worktree. Si "no hay portal", la imagen no se puede construir: Docker = **no aplica** y solo se corre `docker compose config -q`.
+Si el PR toca `portal-laravel/`, `docker/` o `compose.yaml`, desde la raíz del worktree. Primero, en los dos casos (con o sin portal):
 ```bash
 cp <repo>/.env .env 2>/dev/null || { echo "falta .env de la raíz"; exit 1; }   # se copia del clon principal, nunca se imprime
+docker compose config -q
+```
+Si "no hay portal", la imagen no se puede construir: Docker = **no aplica** y queda solo el `config -q`.
+
+Si "hay portal": `compose.yaml` tiene nombres fijos (`sanluquitas`, `sl-portal-*`), así que la prueba **reemplaza los contenedores locales del usuario, usa su volumen `sanluquitas_portal_db` y le aplica las migraciones del PR**. Antes de seguir:
+```bash
+docker ps -a --filter name=sl-portal --format '{{.Names}}'
+```
+Si sale algo, preguntar al usuario antes del `up` (explicarle lo de arriba). Si dice que no → Docker = **no se pudo correr (entorno)**. Luego:
+```bash
 rm -f portal-laravel/bootstrap/cache/packages.php portal-laravel/bootstrap/cache/services.php   # composer install los genera con paquetes de desarrollo
 docker compose up -d --build
 docker compose ps
