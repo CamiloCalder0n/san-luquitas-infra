@@ -41,7 +41,7 @@ systemctl stop apache2
 echo "2/5 Restaurando base de datos"
 sudo -u postgres dropdb --if-exists --force "$MOODLE_DB"
 sudo -u postgres createdb -O "$MOODLE_DB_USER" -E UTF8 -T template0 "$MOODLE_DB"
-sudo -u postgres pg_restore -d "$MOODLE_DB" --no-owner --role="$MOODLE_DB_USER" "$SRC/moodle_db.dump"
+sudo -u postgres pg_restore -d "$MOODLE_DB" --no-owner --role="$MOODLE_DB_USER" < "$SRC/moodle_db.dump"
 
 echo "3/5 Restaurando moodledata (la actual se guarda como respaldo)"
 ANTES="${MOODLE_DATA}.antes-$(date +%Y%m%d%H%M)"
