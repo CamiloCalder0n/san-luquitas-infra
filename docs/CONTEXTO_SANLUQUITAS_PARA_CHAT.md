@@ -64,7 +64,7 @@ Flujo: rama por tarea → PR → el otro revisa → merge. Nadie sube directo a 
 
 - Español colombiano casual, respuestas directas y listas para copiar y pegar.
 - En documentos de la U: estilo sencillo de estudiante, puntual, poco texto. Que no se note tanta IA.
-- Claude Code **no** hace commit, push ni tag; propone el mensaje y nosotros lo ejecutamos. Sin coautoría de Claude en commits ni PR.
+- Claude Code hace commit, push y abre el PR después de la revisión doble, y luego corre la skill `revision-pr` hasta luz verde (ver "Flujo de entrega" en `CLAUDE.md`). El merge lo hace Cami; nunca merge, tag ni force-push. Sin coautoría de Claude en commits ni PR.
 - Nunca secretos en el repo ni en el chat.
 - No inventar resultados; si falta evidencia, avisar.
 - Si algo no cuadra con el enunciado, preguntar antes de improvisar.

@@ -7,15 +7,21 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 
 - Hablar en español colombiano, directo, un paso a la vez.
 - Seguir la guía que el usuario indique (`docs/guias/...`) en orden. No saltarse pasos ni inventar requisitos.
-- **No hacer commit, push, merge ni tag.** Al final de cada paso, proponer el mensaje de commit y el usuario lo ejecuta.
 - No poner a Claude como coautor ni mencionar IA en commits o PR.
 - Commits en español con prefijo: `feat:`, `fix:`, `infra:`, `docs:`.
 - Nunca escribir secretos reales en archivos del repo (`.env` no se sube).
 - Si algo no cuadra con el enunciado de la hackathon o con la guía, preguntar antes de improvisar.
 
+## Flujo de entrega (commits y PRs)
+
+1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos.
+2. Claude hace commit, push y abre el PR (reviewer: Cami).
+3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
+4. **El merge lo hace Cami.** Claude nunca hace merge, tag ni `push --force`, y nunca sube directo a `main`.
+
 ## Límites por persona
 
-- **Santiago:** solo `portal-laravel/` (y capturas en `docs/capturas/`). No tocar `compose.yaml`, `docker/` ni `scripts/` sin avisar a Cami.
+- **Santiago:** solo `portal-laravel/` (y capturas en `docs/capturas/` y su parte de `docs/registro-ia.md`). No tocar `compose.yaml`, `docker/` ni `scripts/` sin avisar a Cami.
 - **Cami:** servidor, `docker/`, `compose.yaml`, `scripts/`, `moodle/`, `docs/`.
 
 ## Datos técnicos que no se cambian
