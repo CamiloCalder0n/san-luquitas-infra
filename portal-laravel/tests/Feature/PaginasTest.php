@@ -27,13 +27,16 @@ class PaginasTest extends TestCase
     {
         config(['app.moodle_url' => 'http://moodle.prueba']);
 
-        $this->get(route('inicio'))
+        // Institución no tiene enlaces en el cuerpo: lo que se ve aquí viene del layout.
+        $this->get(route('institucion'))
             ->assertOk()
-            ->assertSee(route('institucion'))
-            ->assertSee(route('recursos'))
-            ->assertSee(route('novedades.index'))
-            ->assertSee('href="http://moodle.prueba"', false)
-            ->assertSee('Ir a San Luquitas Digital')
+            ->assertSeeInOrder([
+                'href="'.route('inicio').'"', '>Inicio<',
+                'href="'.route('institucion').'"', '>Institución<',
+                'href="'.route('recursos').'"', '>Recursos<',
+                'href="'.route('novedades.index').'"', '>Novedades<',
+                'href="http://moodle.prueba"', '>Ir a San Luquitas Digital<',
+            ], false)
             ->assertSee('información ficticia con fines académicos');
     }
 
