@@ -9,11 +9,18 @@
 <body class="min-h-screen flex flex-col bg-stone-50 text-stone-800">
     <header class="bg-emerald-700 text-white">
         <div class="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
-            <span class="text-lg font-semibold">IE San Luquitas</span>
+            <a href="{{ route('inicio') }}" class="text-lg font-semibold">IE San Luquitas</a>
 
             <nav class="flex flex-wrap items-center gap-4 text-sm">
-                <a href="{{ route('novedades.index') }}"
-                   class="hover:underline {{ request()->routeIs('novedades.*') ? 'font-semibold underline' : '' }}">Novedades</a>
+                @foreach ([
+                    'inicio' => 'Inicio',
+                    'institucion' => 'Institución',
+                    'recursos' => 'Recursos',
+                    'novedades.index' => 'Novedades',
+                ] as $ruta => $texto)
+                    <a href="{{ route($ruta) }}"
+                       class="hover:underline {{ request()->routeIs(str_replace('.index', '.*', $ruta)) ? 'font-semibold underline' : '' }}">{{ $texto }}</a>
+                @endforeach
                 <a href="{{ config('app.moodle_url') }}"
                    class="rounded-md bg-white px-3 py-1.5 font-medium text-emerald-800 hover:bg-emerald-50">Ir a San Luquitas Digital</a>
             </nav>
