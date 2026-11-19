@@ -134,35 +134,33 @@ Cada verificación queda como ✅, ❌, **no aplica** o **no se pudo correr (ent
 
 **Solo en el PC de desarrollo. Nunca correr esta skill en el servidor** (ahí `docker compose up --build` reconstruiría producción y `migrate:fresh` borraría datos).
 
-**Se verifica exactamente lo que trae el PR**, no la carpeta de trabajo (que puede tener archivos sin commit). Para eso, un worktree limpio en el scratchpad:
+**Se verifica exactamente lo que trae el PR**, no la carpeta de trabajo (que puede tener archivos sin commit). Para eso, un worktree limpio en el scratchpad.
+
+**Importante:** en Claude Code el `cd` fuera de la carpeta del repo y las variables de shell **no se mantienen** entre comandos. Por eso cada comando de abajo empieza con `cd` a la **ruta absoluta** del worktree (`<WT>` = `<scratchpad absoluto>/rev-pr-<n>`, escrita completa, sin variables). Si un comando no empieza con ese `cd`, no se corre.
+
 ```bash
-git fetch origin <headRefName>
-wt="<scratchpad>/rev-pr-<n>"
-git worktree remove --force "$wt" 2>/dev/null; git worktree add --detach "$wt" origin/<headRefName>
-cd "$wt"
-git cat-file -e HEAD:portal-laravel/composer.json 2>/dev/null && echo "hay portal" || echo "no hay portal"
+git -C <REPO> fetch origin <headRefName>
+git -C <REPO> worktree remove --force <WT> 2>/dev/null; git -C <REPO> worktree add --detach <WT> origin/<headRefName>
+cd <WT> && git cat-file -e HEAD:portal-laravel/composer.json 2>/dev/null && echo "hay portal" || echo "no hay portal"
 ```
-Todo lo de abajo se corre dentro de `$wt`. Al terminar la ronda: si se levantó Docker, `docker compose down` (sin `-v`) y avisar al usuario que su entorno local quedó apagado; después `git worktree remove --force "$wt"`.
+(`<REPO>` = ruta absoluta del clon principal.) Al terminar la ronda: si se levantó Docker, `cd <WT> && docker compose down` (sin `-v`) y avisar al usuario que su entorno local quedó apagado; después `git -C <REPO> worktree remove --force <WT>`.
 
 Si el PR toca `portal-laravel/` (y "hay portal"), primero preparar (no cuenta como verificación):
 ```bash
-cd portal-laravel
-composer install --no-interaction
-npm ci
-cp .env.example .env && php artisan key:generate   # SQLite local, solo en el worktree
+cd <WT>/portal-laravel && composer install --no-interaction && npm ci
+cd <WT>/portal-laravel && { [ -f .env ] || cp .env.example .env; } && php artisan key:generate --force   # SQLite local, solo en el worktree
 ```
 Luego:
 ```bash
-composer validate --no-check-publish
-php artisan route:list
-DB_CONNECTION=sqlite DB_DATABASE=:memory: php artisan migrate:fresh --seed --force   # siempre en memoria, nunca toca otra base
-php artisan test
-npm run build
+cd <WT>/portal-laravel && composer validate --no-check-publish
+cd <WT>/portal-laravel && php artisan route:list
+cd <WT>/portal-laravel && DB_CONNECTION=sqlite DB_DATABASE=:memory: php artisan migrate:fresh --seed --force   # siempre en memoria
+cd <WT>/portal-laravel && php artisan test
+cd <WT>/portal-laravel && npm run build
 ```
 Si el PR toca `portal-laravel/`, `docker/` o `compose.yaml`, desde la raíz del worktree. Primero, en los dos casos (con o sin portal):
 ```bash
-cp <repo>/.env .env 2>/dev/null || { echo "falta .env de la raíz"; exit 1; }   # se copia del clon principal, nunca se imprime
-docker compose config -q
+cd <WT> && { cp <REPO>/.env .env 2>/dev/null || { echo "falta .env de la raíz"; exit 1; }; } && docker compose config -q   # el .env nunca se imprime
 ```
 Si "no hay portal", la imagen no se puede construir: Docker = **no aplica** y queda solo el `config -q`.
 
@@ -170,14 +168,13 @@ Si "hay portal": `compose.yaml` tiene nombres fijos (`sanluquitas`, `sl-portal-*
 ```bash
 docker ps -a --filter name=sl-portal --format '{{.Names}}'
 ```
-Si sale algo, preguntar al usuario antes del `up` (explicarle lo de arriba). Si dice que no → Docker = **no se pudo correr (entorno)**. Luego:
+Si sale algo, preguntar al usuario antes del `up` (explicarle lo de arriba), salvo que ya lo haya autorizado en esta sesión. Si dice que no → Docker = **no se pudo correr (entorno)**. Luego:
 ```bash
-rm -f portal-laravel/bootstrap/cache/packages.php portal-laravel/bootstrap/cache/services.php   # composer install los genera con paquetes de desarrollo
-docker compose up -d --build
-docker compose ps
+cd <WT> && rm -f portal-laravel/bootstrap/cache/packages.php portal-laravel/bootstrap/cache/services.php   # composer install los genera con paquetes de desarrollo
+cd <WT> && docker compose up -d --build && docker compose ps
 # esperar hasta 60 s a que la app termine migraciones y cachés
 for i in $(seq 1 12); do c=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/); [ "$c" = 200 ] && break; sleep 5; done; echo "$c"
-docker compose logs --tail=50 app | grep -iE "error|exception"   # ver las líneas solo en terminal
+cd <WT> && docker compose logs --tail=50 app | grep -iE "error|exception"   # ver las líneas solo en terminal
 ```
 Docker es ✅ solo si los 3 servicios están arriba, el `curl` dio 200 y el `grep` de logs no mostró nada. Si no, ❌.
 Probar también con `curl` las rutas nuevas del PR. Si el puerto 8080 está ocupado por otro contenedor, preguntar al usuario antes de pararlo. Nunca `docker compose down -v` sin permiso (borra la base de datos).
@@ -226,6 +223,9 @@ EOF
 - **Secreto expuesto:** si una clave ya está en un commit subido, no basta con borrarla (queda en el historial público). Escalar de inmediato **solo por terminal** al usuario para que avise al dueño y se cambie la clave (rotarla). No comentar nada del secreto en el PR hasta que la clave esté cambiada; después, solo el tipo de secreto, nunca el valor ni dónde estaba.
 - Corregir en la misma rama del PR. Leer el código alrededor y arreglar la causa, no el síntoma.
 - Si un hallazgo resulta equivocado, no se corrige: se explica por qué en el siguiente comentario.
+- Las correcciones se hacen en el clon principal (`<REPO>`), en la rama del PR. Ahí puede haber trabajo sin commit de otras tareas: **no se toca ni se sube**.
+- Agregar solo los archivos corregidos, por nombre: `git add <archivo> ...`. **Nunca** `git add -A`, `git add .` ni `git commit -a`.
+- Antes del commit, `git diff --cached --name-only`: cada archivo tiene que ser parte de la corrección. Si aparece otro, sacarlo (`git restore --staged <archivo>`). Si un archivo del PR tenía cambios sin commit que no hice yo, parar y preguntar.
 - Commit: `fix: <qué se corrigió>` (sin coautoría ni IA).
 - Push seguro:
   ```bash

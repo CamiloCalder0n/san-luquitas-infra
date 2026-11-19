@@ -15,9 +15,12 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
 ## Flujo de entrega (commits y PRs)
 
 1. **Revisión doble antes de entregar:** antes de commit, dos pasadas generales sobre el cambio con el checklist de `.claude/skills/revision-pr/SKILL.md`. Si algo falla, se corrige y se repiten las dos.
-2. Claude hace commit, push y abre el PR (reviewer: el otro integrante). Commit y push solo dentro de este flujo y en la rama del PR.
+2. Trabajo en automático: al terminar cada bloque del plan (un PR = un bloque, no un PR por cada paso pequeño) Claude hace la revisión doble, commit, push y abre el PR (reviewer: el otro integrante) sin pedir confirmación, y avisa al usuario. Commit y push solo dentro de este flujo y en la rama del PR. Nada se trabaja en `main`.
+   - Los PRs que dependen de otro salen de la rama anterior (PRs encadenados) y su base es esa rama.
+   - En los commits se agregan los archivos por nombre (nunca `git add -A` ni `git add .`).
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
 4. **El merge lo hace Cami.** Claude nunca hace merge, tag ni `push --force`, y nunca sube directo a `main`.
+5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs.
 
 ## Límites por persona
 
