@@ -18,7 +18,17 @@
       "Bash(git push * HEAD:main *)",
       "Bash(gh pr merge *)",
       "Bash(git tag *)",
-      "Bash(git rebase *)"
+      "Bash(git rebase *)",
+      "Bash(git push)",
+      "Bash(git push origin HEAD)",
+      "Bash(git push * HEAD)",
+      "Bash(git push * +*)",
+      "Bash(git push * *:main)",
+      "Bash(git push * *:refs/heads/main)",
+      "Bash(git -C * push *)",
+      "Bash(git -C * rebase *)",
+      "Bash(git -C * tag *)",
+      "Bash(gh api *merge*)"
     ]
   }
 }

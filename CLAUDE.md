@@ -19,7 +19,7 @@ Contexto completo: `docs/CONTEXTO_SANLUQUITAS_PARA_CHAT.md`. Guía paso a paso: 
    - Los PRs que dependen de otro salen de la rama anterior (PRs encadenados) y su base es esa rama.
    - En los commits se agregan los archivos por nombre (nunca `git add -A` ni `git add .`).
 3. Apenas se abre el PR, correr la skill `revision-pr`. Si hay hallazgos: corregir, push y revisar desde cero hasta luz verde.
-4. **El merge lo hace Cami.** Claude nunca hace merge, tag, rebase ni `push --force`, y nunca sube directo a `main`. `.claude/settings.json` bloquea esos comandos; no quitar esos bloqueos.
+4. **El merge lo hace Cami.** Claude nunca hace merge, tag, rebase ni `push --force`, y nunca sube directo a `main`. `.claude/settings.json` bloquea las formas comunes de esos comandos (ayuda parcial, no garantía; la barrera principal es el "Push seguro" de la skill). No quitar esos bloqueos.
 5. Al terminar todas las tareas: revisión completa de todos los PRs juntos, buscando fallas, código mal hecho o duplicado entre PRs. Cada falla se corrige en el PR que la introdujo si sigue abierto (Paso 6 de la skill, y se actualizan sus PRs hijos); si ya se fusionó, en un PR nuevo `fix/...` desde `origin/main`. Termina cuando una pasada completa no encuentra nada medio o más (máximo 3 pasadas; si sigue saliendo algo, parar y avisar al usuario).
 
 ## Límites por persona
