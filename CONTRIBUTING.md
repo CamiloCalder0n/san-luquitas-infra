@@ -96,7 +96,7 @@ docker compose down -v
 
 ## Servidor (Cami)
 
-El servidor tiene el repo clonado en `/opt/san-luquitas-infra` con una deploy key de solo lectura.
+El servidor tiene el repo clonado en `/opt/san-luquitas-infra` por https (el repo es público, no necesita llaves).
 
 Para actualizar el portal después de un merge:
 

@@ -1,6 +1,8 @@
 # Acceso remoto al servidor (SSH + Tailscale)
 
-El servidor es una VM en el Mac de Cami. Para que Santiago entre desde su casa sin abrir puertos en el router se usa **Tailscale** (VPN privada, gratis, funciona detrás de NAT y en el Wi-Fi de la U).
+El servidor es una VM en el Mac de Cami con red NAT de VirtualBox. Para que Santiago entre desde su casa sin abrir puertos en el router se instala **Tailscale dentro de la VM** (VPN privada, gratis; solo necesita salida a internet, así que funciona detrás del NAT de VirtualBox y del Wi-Fi de la U).
+
+Cami entra desde su Mac con `ssh -p 2222 adsml@localhost` (reenvío de puertos de VirtualBox).
 
 | Medida | Para qué |
 |---|---|
@@ -70,16 +72,16 @@ La contraseña de `adduser` solo sirve para `sudo`, no para entrar por SSH.
 
 ```bash
 sudo groupadd devs
-sudo usermod -aG devs admsl
+sudo usermod -aG devs adsml
 sudo usermod -aG devs santiago
 sudo mkdir -p /opt/san-luquitas-infra
-sudo chown admsl:devs /opt/san-luquitas-infra
+sudo chown adsml:devs /opt/san-luquitas-infra
 sudo chmod 2775 /opt/san-luquitas-infra
 ```
 
 ## 6. Endurecer SSH (Cami)
 
-Antes de esto, verificar que Cami ya entra con llave (`ssh-copy-id`). **Dejar una sesión SSH abierta** mientras se prueba.
+Antes de esto, verificar que Cami ya entra con llave (`ssh-copy-id -p 2222 adsml@localhost`). **Dejar una sesión SSH abierta** mientras se prueba.
 
 ```bash
 sudo tee /etc/ssh/sshd_config.d/01-sanluquitas.conf > /dev/null <<'EOF'
@@ -87,7 +89,7 @@ PermitRootLogin no
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PubkeyAuthentication yes
-AllowUsers admsl santiago
+AllowUsers adsml santiago
 MaxAuthTries 3
 LoginGraceTime 30
 EOF
@@ -116,14 +118,13 @@ Host sanluquitas
 
 Luego solo: `ssh sanluquitas`. También sirve con VS Code → Remote-SSH.
 
-Para abrir Moodle y el portal desde su navegador, agregar al archivo hosts:
+Para abrir Moodle y el portal desde su navegador se usa un túnel SSH (Moodle solo acepta `http://localhost:8081`):
 
-- Mac/Linux: `sudo nano /etc/hosts`
-- Windows: Bloc de notas como administrador → `C:\Windows\System32\drivers\etc\hosts`
+```bash
+ssh -N -L 8081:localhost:80 -L 8080:localhost:8080 santiago@100.x.y.z
+```
 
-```
-100.x.y.z   sanluquitas.local
-```
+Con esa terminal abierta, en su navegador: http://localhost:8081 (Moodle) y http://localhost:8080 (portal).
 
 ## 8. Verificación
 

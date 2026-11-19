@@ -1,0 +1,5 @@
+username,password,firstname,lastname,email,course1,role1
+docente1,Docente#2026,Marta,Rojas,docente1@sanluquitas.edu.co,PROG45,editingteacher
+estudiante1,Estudiante#2026,Tomás,Pérez,estudiante1@sanluquitas.edu.co,PROG45,student
+estudiante2,Estudiante#2026,Valentina,Gómez,estudiante2@sanluquitas.edu.co,PROG45,student
+estudiante3,Estudiante#2026,Samuel,Díaz,estudiante3@sanluquitas.edu.co,PROG45,student
