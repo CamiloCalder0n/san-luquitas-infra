@@ -70,10 +70,15 @@ class NovedadTest extends TestCase
                 'fecha_publicacion' => 'El campo fecha de publicación es obligatorio.',
             ]);
 
-        $this->post(route('novedades.store'), $this->datosValidos(['categoria' => 'otra', 'titulo' => str_repeat('a', 151)]))
+        $this->post(route('novedades.store'), $this->datosValidos([
+            'categoria' => 'otra',
+            'titulo' => str_repeat('a', 151),
+            'contenido' => str_repeat('a', 10001),
+        ]))
             ->assertSessionHasErrors([
                 'categoria' => 'La categoría debe ser noticia, comunicado o evento.',
                 'titulo' => 'El campo título no puede tener más de 150 caracteres.',
+                'contenido' => 'El campo contenido no puede tener más de 10000 caracteres.',
             ]);
 
         $this->assertSame(0, Novedad::count());

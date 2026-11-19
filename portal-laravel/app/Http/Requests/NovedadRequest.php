@@ -19,7 +19,7 @@ class NovedadRequest extends FormRequest
         return [
             'titulo' => ['required', 'string', 'max:150'],
             'resumen' => ['required', 'string', 'max:255'],
-            'contenido' => ['required', 'string'],
+            'contenido' => ['required', 'string', 'max:10000'],
             'categoria' => ['required', Rule::in(array_keys(Novedad::CATEGORIAS))],
             'fecha_publicacion' => ['required', 'date'],
         ];
