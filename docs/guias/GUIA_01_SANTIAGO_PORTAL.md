@@ -28,6 +28,8 @@ cd san-luquitas-infra
 git checkout -b feat/portal-base
 ```
 
+Si el PR del flujo de revisión (`docs/flujo-revision`) todavía no está en `main`, la rama sale de esa: `git switch docs/flujo-revision && git switch -c feat/portal-base`, y el PR del portal va con base `docs/flujo-revision`. Así la rama ya trae `.claude/` (skill y bloqueo de firma de IA).
+
 ## Paso 1 – Crear el proyecto Laravel
 
 ```bash
